@@ -72,11 +72,11 @@ document.addEventListener("DOMContentLoaded", () => {
   //Botones importar/ exportar:
   document.getElementById("btnExportar").addEventListener("click", exportarNotas);
   const inputImportar = document.getElementById("inputImportar");
-  //getElementById → localiza el botón en el HTML mediante su id "btnImportar".
+  //getElementById → localiza el botón en el HTML mediante su id "btnImportarBtn".
   //addEventListener("click", ...) → detecta cuándo lo clicas.
 //inputImportar.click() → simula un clic en el input de archivos. 
-  document.getElementById("btnImportar").addEventListener("click", () => inputImportar.click());
-  document.getElementById()
+  document.getElementById("btnImportarBtn").addEventListener("click", () => inputImportar.click());
+
   
   
   
@@ -188,15 +188,18 @@ function render() {
   const visibles = ordenarNotas(filtrarNotas(estado.notas));
   //Recorre todas las notas visibles (n representa cada nota individual).
   for (const n of visibles) {
+    const idNota = n.id;
     //Crea un elemento article para cada nota
     const card = document.createElement("article");
     card.className = "nota"; //Le da la clase "nota" para aplicar estilos CSS.
-   //Rellena el contenido HTML del artículo con la información de la nota
+   card.dataset.id = n.id; //dataset para poder leer el html
+   
+    //Rellena el contenido HTML del artículo con la información de la nota
     //${escapeHtml(n.texto)} → protege el texto por seguridad (evita inyecciones de HTML).
     //[P${n.prioridad}] → muestra la prioridad.
     //<time> → muestra la fecha formateada.
     //Botones "Completar","Borrar" u "Editar" con atributos data para identificar la acción y la nota.
-   card.innerHTML = `
+    card.innerHTML = `
       <header>
         <strong>[P${n.prioridad}] ${escapeHtml(n.texto)}</strong>
         <time datetime="${n.fecha}">${formatearFecha(n.fecha)}</time>
@@ -253,10 +256,10 @@ function onSubmitNota(e) {
  * @param {*} nuevoTexto nuevo texto
  */
 
-function validarTexto(nuevoTexto) {
+function validarTexto(texto) {
 //Crea un elemento input para editar el texto de la nota
 const inputTexto = document.createElement("input");
-inputTexto.value = nota.texto; //Establece el valor inicial del input con el texto actual de la nota
+inputTexto.value = texto; //Establece el valor inicial del input con el texto actual de la nota
 inputTexto.required = true; //Hace que el campo sea obligatorio y no se pueda dejar vacío
 inputTexto.maxLength = 200; //Limita la longitud máxima del texto a 200 caracteres
 inputTexto.setCustomValidity("");//Limpia cualquier mensaje de validación previo
@@ -265,8 +268,9 @@ inputTexto.setCustomValidity("");//Limpia cualquier mensaje de validación previ
 if(!inputTexto.checkValidity()) {
   inputTexto.setCustomValidity("El texto es obligatorio y debe tener menos de 200 caracteres.");
   inputTexto.reportValidity(); //Muestra el mensaje de validación al usuario
-  return; //Sale de la función si el texto no es válido
+  return false; //Sale de la función si el texto no es válido
 }
+return true;
 }
 
 /**
@@ -276,10 +280,10 @@ if(!inputTexto.checkValidity()) {
  */
 
 
-function validarFecha(nuevaFecha) {
+function validarFecha(fecha) {
 //Validación de la fecha
 const inputFecha = document.createElement("input");
-inputFecha.value = nota.fecha; //Establece el valor inicial del input con la fecha actual de la nota
+inputFecha.value = fecha; //Establece el valor inicial del input con la fecha actual de la nota
 inputFecha.type = "date"; //Establece el tipo de input como fecha
 inputFecha.min = new Date(); //Fecha mínima permitida
 inputFecha.setCustomValidity("");//Limpia cualquier mensaje de validación previo
@@ -289,74 +293,121 @@ inputFecha.setCustomValidity("");//Limpia cualquier mensaje de validación previ
 if(!inputFecha.checkValidity()) {
   inputFecha.setCustomValidity("La fecha no puede ser anterior a hoy.");
   inputFecha.reportValidity(); //Muestra el mensaje de validación al usuario
-  return; //Sale de la función si la fecha no es válida
+  return false; //Sale de la función si la fecha no es válida
 
 }
+return true;
 }
 
 
 
-function validarPrioridad(nuevaPrioridad){
+function validarPrioridad(prioridad){
+  const input = document.createElement("input");
 //Validación de la prioridadconst inputPrioridad = document.createElement("input");
-inputPrioridad.value = nota.prioridad; //Establece el valor inicial del input con la prioridad actual de la nota
-inputPrioridad.type = "number"; //Establece el tipo de input como número
-inputPrioridad = Math.max(1, Math.min(3, Number(prioridad) || 1)); //Limita el valor entre 1 y 3
-inputPrioridad.setCustomValidity("");//Limpia cualquier mensaje de validación previo
+input.value = prioridad; //Establece el valor inicial del input con la prioridad actual de la nota
+input.type = "number"; //Establece el tipo de input como número
+input.max = 3;
+input.min = 1; //Limita el valor entre 1 y 3
+input.setCustomValidity("");//Limpia cualquier mensaje de validación previo
 
 //Valida el campo de prioridad , si no es válido, muestra un mensaje de error
-if(!inputPrioridad.checkValidity()) {
-  inputPrioridad.setCustomValidity("La prioridad debe estar entre 1 y 3.");
-  inputPrioridad.reportValidity(); //Muestra el mensaje de validación al usuario
-  return; //Sale de la función si la prioridad no es válida 
+if(!input.checkValidity()) {
+  input.setCustomValidity("La prioridad debe estar entre 1 y 3.");
+  input.reportValidity(); //Muestra el mensaje de validación al usuario
+  return false; //Sale de la función si la prioridad no es válida 
 
 
 }
+
+return true;
 }
 
 /**
  * 
- * Función para editar una nota
+ * Función para editar una nota in line
  * @param {*} nuevoTexto 
  * @param {*} nuevaFecha 
  * @param {*} nuevaPrioridad 
  */
 
 
-function editarNota(id,nuevoTexto, nuevaFecha, nuevaPrioridad) {
+
+function editarNota(id) {
+ // Busca el índice de la nota en el array estado.notas según el id 
+const idx = estado.notas.findIndex(n => n.id === id);
+ if (idx < 0) return; // Si no se encuentra la nota, salimos de la función
+const nota = estado.notas[idx]; // Guardamos la referencia de la nota a editar
+
+
+ // Seleccionamos la tarjeta (elemento <article>) correspondiente a esta nota
+ // Usamos data-id para localizar la nota exacta dentro del contenedor listaNotas
+const tarjeta = document.querySelector(`#listaNotas article[data-id="${id}"]`);
+  if (!tarjeta) return; // Si no existe la tarjeta en el DOM, salimos
+
+
+ // Reemplazamos el contenido de la tarjeta por inputs editables (edición inline)
+ tarjeta.innerHTML = `
+    <header>
+      <label>Texto
+        <input id="editarTexto" required maxlength="200" value="${nota.texto}">
+      </label>
+
+      <label>Fecha
+        <input id="editarFecha" type="date" required value="${nota.fecha}">
+      </label>
+
+      <label>Prioridad
+        <select id="editarPrioridad">
+          <option value="1" ${nota.prioridad == 1 ? "selected" : ""}>Baja</option>
+          <option value="2" ${nota.prioridad == 2 ? "selected" : ""}>Media</option>
+          <option value="3" ${nota.prioridad == 3 ? "selected" : ""}>Alta</option>
+        </select>
+      </label>
+    </header>
+
+    <footer>
+      <button id="guardarEdicion">Guardar</button>
+      <button id="cancelarEdicion">Cancelar</button>
+    </footer>
+  `;
+
+ 
+  // Creamos referencias a los botones Guardar y Cancelar
+const botonGuardar = tarjeta.querySelector("#guardarEdicion");
+const botonCancelar = tarjeta.querySelector("#cancelarEdicion");
+
+ 
+ // Guardar edición con validación
+botonGuardar.addEventListener("click",() => {
+   // Creamos referencias a los inputs para acceder a sus valores luego
+const inputTexto = tarjeta.querySelector("#editarTexto");
+const inputFecha = tarjeta.querySelector("#editarFecha");
+const inputPrioridad = tarjeta.querySelector("#editarPrioridad");
+
+//Console log para comprobar que todo funciona correctamente
+console.log("Valores actuales:", inputTexto.value, inputFecha.value, inputPrioridad.value);
+
 //Validar que solo se puede editar una nota a la vez
-  
-if(validarTexto(nuevoTexto)) {
-  nota.texto = nuevoTexto; //Actualiza el texto de la nota
-}
+if(!validarTexto(inputTexto.value)) return;
+if(!validarFecha(inputFecha.value)) return;
+if(!validarPrioridad(inputPrioridad.value)) return;
 
-if(validarFecha(nuevaFecha)) {
-  nota.fecha = nuevaFecha; //Actualiza la fecha de la nota
-}
+// Si todo es válido, actualizamos la nota con los nuevos valores
+nota.texto = inputTexto.value;
+nota.fecha = inputFecha.value;
+nota.prioridad = Number(inputPrioridad.value);
 
-if(validarPrioridad(nuevaPrioridad)) {
-  nota.prioridad = nuevaPrioridad; //Actualiza la prioridad de la nota
-}
+ // Guardamos y renderizamos
+    guardarEstado();
+    render();
 
- alert("Nota editada correctamente");
+});
 
 
-//Botones de "Guardar" y "Cancelar"
-const btnGuardar = document.createElement("button"); 
-btnGuardar.textContent = "Guardar"; 
-const btnCancelar = document.createElement("button");
-btnCancelar.textContent = "Cancelar";
+ // Cancelar edición: volver a renderizar la nota original
+  botonCancelar.addEventListener("click", () => render());
 
 }
-
-
-
-
-
-
-
-
-
-
 
 
 /**
@@ -392,10 +443,10 @@ function onAccionNota(e) {
     alert("Nota completada");
   
   }else if(acc === "editar"){
-    //Obtener la referencia de la nota a editar en estado.notas
-   estado.notas[idx];
-   //Llamar a la función editarNota con los datos actuales de la nota
-      editarNota(estado.notas[idx].id, estado.notas[idx].texto, estado.notas[idx].fecha, estado.notas[idx].prioridad);
+    //Llamamos a la función pasándole el id
+    editarNota(id);
+   
+    return;// salimos para no ejecutar el guardar/render general
      
   }
   
