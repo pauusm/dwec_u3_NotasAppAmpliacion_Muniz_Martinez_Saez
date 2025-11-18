@@ -178,47 +178,33 @@ function ordenarNotas(notas) {
  * @returns {void}
  */
 function render() {
-  //Selecciona el contenedor donde se mostrarán las notas
+  // Selecciona el contenedor donde se mostrarán las notas
   const cont = document.getElementById("listaNotas");
-  cont.innerHTML = ""; //Limpia el contenedor para evitar duplicados
-  //Obtiene las notas filtradas y ordenadas
-  //estado.notas →  array global con todas las notas guardadas.
-  //filtrarNotas(...) → devuelve solo las que coinciden con el filtro actual
-  //ordenarNotas(...) → las ordena según prioridad, fecha y texto
-  const visibles = ordenarNotas(filtrarNotas(estado.notas));
-  //Recorre todas las notas visibles (n representa cada nota individual).
-  for (const n of visibles) {
-    const idNota = n.id;
-    //Crea un elemento article para cada nota
-    const card = document.createElement("article");
-    card.className = "nota"; //Le da la clase "nota" para aplicar estilos CSS.
-   card.dataset.id = n.id; //dataset para poder leer el html
-   
-    //Rellena el contenido HTML del artículo con la información de la nota
-    //${escapeHtml(n.texto)} → protege el texto por seguridad (evita inyecciones de HTML).
-    //[P${n.prioridad}] → muestra la prioridad.
-    //<time> → muestra la fecha formateada.
-    //Botones "Completar","Borrar" u "Editar" con atributos data para identificar la acción y la nota.
-    card.innerHTML = `
-      <header>
-        <strong>[P${n.prioridad}] ${escapeHtml(n.texto)}</strong>
-        <time datetime="${n.fecha}">${formatearFecha(n.fecha)}</time>
-      </header>
-      <footer>
-        <button data-acc="completar" data-id="${n.id}">Completar</button>
-        <button data-acc="editar" data-id="${n.id}">Editar</button>
-        <button data-acc="borrar" data-id="${n.id}">Borrar</button>
-      </footer>
-    `;
-  
-    cont.appendChild(card);//Añade el artículo al contenedor principal
 
+  // Limpia el contenedor para que no se acumulen notas antiguas
+  // Esto usa innerHTML solo para vaciar, no para generar nuevas notas
+  cont.innerHTML = "";
+
+  // Creamos un DocumentFragment para añadir todos los nodos de notas
+  // antes de insertarlos al DOM de golpe, lo que es más eficiente
+  const fragment = document.createDocumentFragment();
+
+  // Filtra y ordena las notas según la prioridad, fecha y filtro activo
+  const visibles = ordenarNotas(filtrarNotas(estado.notas));
+
+  // Recorre todas las notas visibles
+  for (const n of visibles) {
+    // Crea un nodo DOM a partir del template <template> clonándolo
+    // Esta función reemplaza el uso de innerHTML para generar cada nota
+    const notaEl = crearNotaDOM(n);
+
+    // Añade la nota al fragmento
+    fragment.appendChild(notaEl);
   }
-  //Busca todos los botones dentro del contenedor que tengan el atributo data-acc (o sea, los de “Completar”, “Borrar” y "Editar").
-  //cada botón encontrado le añade un evento "click".
-  //Cuando se haga clic, se ejecutará la función onAccionNota
-  //Dentro de la función se comprueba qué botón se pulsó y se realiza la acción correspondiente (borrar o completar la nota).
-  cont.querySelectorAll("button[data-acc]").forEach(btn => btn.addEventListener("click", onAccionNota));
+
+  // Inserta todas las notas de golpe en el contenedor
+  // Esto evita múltiples re-paints del DOM, mejorando el rendimiento
+  cont.appendChild(fragment);
 }
 
 /**
