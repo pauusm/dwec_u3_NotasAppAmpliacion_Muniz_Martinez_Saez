@@ -208,6 +208,33 @@ function render() {
 }
 
 /**
+ * Crea un nodo DOM de una nota clonando el template <template> del HTML.
+ *
+ * @param {Object} nota - Objeto que representa una nota.
+ * @param {string} nota.id - ID única de la nota.
+ * @param {string} nota.texto - Texto principal de la nota.
+ * @param {string} nota.fecha - Fecha en formato AAAA-MM-DD.
+ * @param {number} nota.prioridad - Prioridad numérica (1 = baja, 2 = media, 3 = alta).
+ * @returns {DocumentFragment} - Un fragmento DOM listo para insertar en el documento.
+ */
+function crearNotaDOM(nota) {
+  const tpl = document.getElementById("nota-template");
+  const clone = tpl.content.cloneNode(true);
+
+  clone.querySelector(".titulo").textContent = nota.texto;
+  clone.querySelector(".fecha")..textContent = nota.fecha;
+
+  // asignar ID a botones
+  clone.querySelectorAll("button").forEach(btn => {
+    btn.dataset.id = nota.id;
+    btn.addEventListener("click", onAccionNota);
+  });
+
+  return clone;
+}
+
+
+/**
  * Formatea una fecha ISO a formato legible localmente.
  * @param {string} ymd - Fecha en formato YYYY-MM-DD.
  * @returns {string} Fecha formateada según el idioma del navegador.
