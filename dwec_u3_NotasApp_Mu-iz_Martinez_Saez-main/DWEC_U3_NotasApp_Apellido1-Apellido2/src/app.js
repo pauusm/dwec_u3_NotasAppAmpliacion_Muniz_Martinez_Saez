@@ -122,8 +122,13 @@ function cargarEstado() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  //
   cargarEstado();
+  // --- SNAPSHOTS ---
+  document.getElementById("btnRestaurarSnapshot").addEventListener("click", () => {
+    const idx = document.getElementById("listaSnapshots").value;
+    restaurarSnapshot(Number(idx));
+  });
+  renderSnapshots();
   document.querySelectorAll("nav [data-hash]").forEach(btn => {
     btn.addEventListener("click", () => { location.hash = btn.getAttribute("data-hash"); });
   });
