@@ -222,7 +222,7 @@ function crearNotaDOM(nota) {
   const clone = tpl.content.cloneNode(true);
 
   clone.querySelector(".titulo").textContent = nota.texto;
-  clone.querySelector(".fecha")..textContent = nota.fecha;
+  clone.querySelector(".fecha").textContent = nota.fecha;
 
   // asignar ID a botones
   clone.querySelectorAll("button").forEach(btn => {
