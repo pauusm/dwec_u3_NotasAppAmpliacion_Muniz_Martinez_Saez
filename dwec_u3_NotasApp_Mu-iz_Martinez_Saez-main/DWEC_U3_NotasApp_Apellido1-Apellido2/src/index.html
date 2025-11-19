@@ -66,27 +66,6 @@
   <button id="btnImportarBtn">Importar notas</button>
   <input type="file" id="inputImportar" accept="application/json" hidden>
   </footer>
-
-  <script src="app.js" defer>
-     //Snapshot:
-    document.getElementById("btnRestaurarSnapshot").addEventListener("click", () => {
-  const idx = document.getElementById("listaSnapshots").value;
-  restaurarSnapshot(Number(idx));
-});
-
-function renderSnapshots() {
-  const snaps = obtenerSnapshots();
-  const sel = document.getElementById("listaSnapshots");
-  sel.innerHTML = "";
-
-  snaps.forEach((s, i) => {
-    const opt = document.createElement("option");
-    opt.value = i;
-    opt.textContent = `${i+1}. ${new Date(s.timestamp).toLocaleString()}`;
-    sel.appendChild(opt);
-  });
-}
-
-  </script>
+  <script src="app.js" defer></script>
 </body>
 </html>
