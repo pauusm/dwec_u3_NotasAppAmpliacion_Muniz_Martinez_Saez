@@ -72,6 +72,26 @@ function obtenerSnapshots() {
     return [];
   }
 }
+
+//Restaurar snapshot especifico:
+/**
+* Restaura el estado desde un snapshot mediante su propio indice:
+*/
+function restaurarSnapshot(idx) {
+  const lista = obtenerSnapshots();
+  if (!lista[idx]) {
+    alert("Snapshot inválido");
+    return;
+  }
+
+  const snap = lista[idx].datos;
+  estado.notas = snap.notas;
+  estado.filtro = snap.filtro;
+
+  guardarEstado();
+  render();
+  alert("Estado restaurado correctamente");
+}
 /**
  * Carga el estado almacenado desde localStorage.
  * Si los datos son inválidos, se elimina el almacenamiento.
