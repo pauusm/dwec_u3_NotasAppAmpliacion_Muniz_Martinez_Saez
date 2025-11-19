@@ -391,7 +391,8 @@ return true;
 
 function validarPrioridad(prioridad){
   const input = document.createElement("input");
-//Validación de la prioridadconst inputPrioridad = document.createElement("input");
+//Validación de la prioridad
+const inputPrioridad = document.createElement("input");
 input.value = prioridad; //Establece el valor inicial del input con la prioridad actual de la nota
 input.type = "number"; //Establece el tipo de input como número
 input.max = 3;
