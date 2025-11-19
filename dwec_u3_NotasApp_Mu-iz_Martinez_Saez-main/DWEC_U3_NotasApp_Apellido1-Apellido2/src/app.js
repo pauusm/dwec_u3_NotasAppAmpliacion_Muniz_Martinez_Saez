@@ -58,6 +58,20 @@ function guardarSnapshot() {
   }
 }
 
+//Listado de snapshots:
+/**
+*Mostrar lista de snapshots:
+* @returns {Array}
+*/
+function obtenerSnapshots() {
+  try {
+    const raw = localStorage.getItem("tablon_snapshots");
+    return raw ? JSON.parse(raw) : [];
+  } catch (err) {
+    console.error("Error leyendo snapshots:", err);
+    return [];
+  }
+}
 /**
  * Carga el estado almacenado desde localStorage.
  * Si los datos son inválidos, se elimina el almacenamiento.
