@@ -298,7 +298,8 @@ function validarFecha(fecha) {
 const inputFecha = document.createElement("input");
 inputFecha.value = fecha; //Establece el valor inicial del input con la fecha actual de la nota
 inputFecha.type = "date"; //Establece el tipo de input como fecha
-inputFecha.min = new Date(); //Fecha mínima permitida
+const hoy = new Date().toISOString().slice(0,10);
+inputFecha.min = hoy; //Fecha mínima permitida
 inputFecha.setCustomValidity("");//Limpia cualquier mensaje de validación previo
 
 
