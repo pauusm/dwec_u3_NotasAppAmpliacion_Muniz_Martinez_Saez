@@ -61,25 +61,7 @@
       catch { return d.toLocaleDateString(); }
     }
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
-    //Snapshot:
-    document.getElementById("btnRestaurarSnapshot").addEventListener("click", () => {
-  const idx = document.getElementById("listaSnapshots").value;
-  restaurarSnapshot(Number(idx));
-});
-
-function renderSnapshots() {
-  const snaps = obtenerSnapshots();
-  const sel = document.getElementById("listaSnapshots");
-  sel.innerHTML = "";
-
-  snaps.forEach((s, i) => {
-    const opt = document.createElement("option");
-    opt.value = i;
-    opt.textContent = `${i+1}. ${new Date(s.timestamp).toLocaleString()}`;
-    sel.appendChild(opt);
-  });
-}
-
+   
   </script>
 </body>
 </html>
