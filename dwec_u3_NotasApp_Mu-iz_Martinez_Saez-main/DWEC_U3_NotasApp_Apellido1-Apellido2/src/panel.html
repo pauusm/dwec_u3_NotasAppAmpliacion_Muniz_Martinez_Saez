@@ -18,7 +18,12 @@
     <h1>Panel Diario</h1>
     <p>Notas de hoy.</p>
   </header>
-  <main id="contenedor"><p class="vacio">Esperando datos…</p></main>
+  <main id="contenedor"><p class="vacio">Esperando datos…</p>
+  <!--Anapshots integración-->
+  <select id="listaSnapshots"></select>
+  <button id="btnRestaurarSnapshot">Restaurar</button>
+
+  </main>
   <footer><small>© DWEC — U3</small></footer>
 
   <script>
@@ -56,6 +61,25 @@
       catch { return d.toLocaleDateString(); }
     }
     function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+    //Snapshot:
+    document.getElementById("btnRestaurarSnapshot").addEventListener("click", () => {
+  const idx = document.getElementById("listaSnapshots").value;
+  restaurarSnapshot(Number(idx));
+});
+
+function renderSnapshots() {
+  const snaps = obtenerSnapshots();
+  const sel = document.getElementById("listaSnapshots");
+  sel.innerHTML = "";
+
+  snaps.forEach((s, i) => {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = `${i+1}. ${new Date(s.timestamp).toLocaleString()}`;
+    sel.appendChild(opt);
+  });
+}
+
   </script>
 </body>
 </html>
