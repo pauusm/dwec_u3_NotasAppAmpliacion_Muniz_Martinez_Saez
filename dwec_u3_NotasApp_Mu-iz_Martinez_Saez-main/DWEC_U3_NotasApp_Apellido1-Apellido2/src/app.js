@@ -29,6 +29,35 @@ try {
   }
 }
 
+//Guardar snapshot:
+/**Guardar una copia actual del estado(snapshot)
+*/
+function guardarSnapshot() {
+  try {
+    const raw = localStorage.getItem("tablon_snapshots");
+    const lista = raw ? JSON.parse(raw) : [];
+
+    // Nuevo snapshot
+    const snap = {
+      timestamp: new Date().toISOString(),
+      datos: {
+        notas: estado.notas,
+        filtro: estado.filtro
+      }
+    };
+
+    // Añadir al principio
+    lista.unshift(snap);
+
+    // Mantener solo los últimos 5
+    const limitado = lista.slice(0, 5);
+
+    localStorage.setItem("tablon_snapshots", JSON.stringify(limitado));
+  } catch (err) {
+    console.error("Error guardando snapshot:", err);
+  }
+}
+
 /**
  * Carga el estado almacenado desde localStorage.
  * Si los datos son inválidos, se elimina el almacenamiento.
