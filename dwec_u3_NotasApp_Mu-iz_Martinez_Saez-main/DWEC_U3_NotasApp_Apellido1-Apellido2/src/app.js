@@ -531,6 +531,8 @@ function onAccionNota(e) {
   
 
   guardarEstado();
+  //Snapshot:
+  guardarSnapshot();
   render();
 }
 
@@ -683,6 +685,8 @@ function importarNotas(archivo){
       }
       //guardar estado en LS:
       guardarEstado();
+      //Snapshot:
+      guardarSnapshot();
         render();
         alert("Se han importado las notas.");
     }catch(err){
