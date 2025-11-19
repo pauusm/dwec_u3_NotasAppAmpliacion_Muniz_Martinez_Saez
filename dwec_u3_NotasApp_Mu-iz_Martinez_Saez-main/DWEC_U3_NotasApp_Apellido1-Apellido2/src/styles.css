@@ -7,3 +7,14 @@ nav button { margin-right: .5rem; }
 #listaNotas { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 .nota { border: 1px solid #ddd; border-radius: 8px; padding: .75rem; }
 .nota header { display: flex; justify-content: space-between; align-items: center; }
+/*Incluir estilo para que se pueda observar el select del snapshot*/
+#listaSnapshots {
+  display: inline-block;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #000;
+  min-width: 200px;
+}
