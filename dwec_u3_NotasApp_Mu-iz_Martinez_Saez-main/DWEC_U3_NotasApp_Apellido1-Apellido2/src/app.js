@@ -321,6 +321,8 @@ function onSubmitNota(e) {
     const nota = crearNota(texto, fecha, prioridad);
     estado.notas.push(nota);//añade la nueva nota al array de notas
     guardarEstado();//guarda el estado actualizado en localStorage
+    //guardamos snapshot:
+    guardarSnapshot();
     e.target.reset();//limpia el formulario para que puedas añadir otra nota
     alert("Nota creada");
     render();
