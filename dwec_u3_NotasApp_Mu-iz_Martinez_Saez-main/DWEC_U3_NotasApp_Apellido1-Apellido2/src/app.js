@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const idx = document.getElementById("listaSnapshots").value;
     restaurarSnapshot(Number(idx));
   });
-  renderSnapshots();
+  
   document.querySelectorAll("nav [data-hash]").forEach(btn => {
     btn.addEventListener("click", () => { location.hash = btn.getAttribute("data-hash"); });
   });
@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //inputImportar.click() → simula un clic en el input de archivos. 
   document.getElementById("btnImportarBtn").addEventListener("click", () => inputImportar.click());
 
-  
+
   
   
   //e (de event) representa el evento en sí, y contiene toda la información sobre lo que pasó 
@@ -162,7 +162,8 @@ document.addEventListener("DOMContentLoaded", () => {
     e.target.value = "";
   }
 });
-  render();
+  render();  
+  renderSnapshots();
 });
 //El hash es la parte de una URL que va después del símbolo #.
 //"hashchange" es un evento especial que se dispara cada vez que cambia el hash en la URL.
@@ -702,6 +703,18 @@ function importarNotas(archivo){
   //Indica al FileReader que lea el archivo como texto plano.
   //Una vez leído, se dispara onload para procesarlo.
   leer.readAsText(archivo);
+}
+function renderSnapshots() {
+  const snaps = obtenerSnapshots();
+  const sel = document.getElementById("listaSnapshots");
+  sel.innerHTML = "";
+
+  snaps.forEach((s, i) => {
+    const opt = document.createElement("option");
+    opt.value = i;
+    opt.textContent = `${i + 1}. ${new Date(s.timestamp).toLocaleString()}`;
+    sel.appendChild(opt);
+  });
 }
 
 
