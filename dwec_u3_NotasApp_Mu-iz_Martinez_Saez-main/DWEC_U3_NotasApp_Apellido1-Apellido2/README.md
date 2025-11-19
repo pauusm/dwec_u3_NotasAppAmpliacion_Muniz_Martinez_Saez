@@ -7,7 +7,7 @@ Aplicación SPA para crear y gestionar notas desde cliente. Demuestra el uso de 
 Implementar los requisitos funcionales establecidos: objetos nativos; navigator.language; filtros mediante location.hash; construcción dinámica de interfaz; viewport/scroll/pantalla completa; gestión de ventanas; persistencia; depuración y documentación.
 
 ## Contenido del repositorio
-/ (raíz)
+/ 
 ├─ index.html
 ├─ styles.css
 ├─ app.js
@@ -27,107 +27,104 @@ Implementar los requisitos funcionales establecidos: objetos nativos; navigator.
 8- Activar el modo pantalla completa cuando sea necesario.
 
 ## Nuevas funcionalidades implementadas
-1. Edición inline de notas (Paula):
-  Permite modificar texto, fecha y prioridad directamente en la tarjeta.
-  Validación automática al confirmar cambios.
-  Re-renderización segura del DOM sin refrescar la página.
 
-2. Validaciones avanzadas de formulario (Paula):
-  Validación estricta de texto (no vacío).
-  Comprobación de formato y futuro de fecha.
-  Prioridad limitada entre 1 y 3.
-  Sistema de aviso visual y bloqueo si hay errores.
+1. **Edición inline de notas (Paula):**  
+   Modificación directa de texto, fecha y prioridad desde la tarjeta. Validación automática y re-renderización sin refrescar.
 
-3. Exportación e importación JSON (Alba):
-  Exportación completa de notas a .json.
-  Carga de fichero externo con notas nuevas.
-  Doble validación del JSON importado para evitar datos corruptos.
+2. **Validaciones avanzadas de formulario (Paula):**  
+   Texto no vacío, fecha válida, prioridad 1–3. Bloqueo del envío si hay errores.
 
-4. Snapshots (guardar, cargar, restaurar, listar) (Alba):
-  Guardado manual de estados completos.
-  Restauración instantánea del estado elegido.
-  Listado dinámico de snapshots disponibles.
-  Persistencia en localStorage.
+3. **Exportación e importación JSON (Alba):**  
+   Exportación completa de notas y carga de archivos externos con doble validación.
 
-5. Integración completa con la interfaz (Noemi):
-  Render dinámico con plantillas HTML seguras.
-  Scroll automático hacia la nueva nota.
+4. **Snapshots (Alba):**  
+   Guardado, restauración y listado de estados completos, persistidos en localStorage.
 
-6. Modo pantalla completa (Noemi)
-  Entrada y salida controlada con requestFullscreen() / exitFullscreen().
-  Indicadores visuales y compatibilidad con navegadores modernos.
+5. **Integración completa con la interfaz (Noemi):**  
+   Render seguro mediante plantillas `<template>`.  
+   Scroll automático hacia nuevas notas.
 
-7. Mejoras de filtrado y ordenación (Noemi)
-   Lógica centralizada para evitar duplicación.
+6. **Modo pantalla completa (Noemi):**  
+   Control con Fullscreen API, con indicadores visuales.
 
-8. Generación dinámica segura con plantillas (Noemi)
-  Uso de elementos clonados desde <template>.
-  Prevención de inyección HTML.
-  Estructura consistente de tarjetas.
+7. **Mejoras de filtrado y ordenación (Noemi).**
 
-9. Comunicación avanzada entre ventanas (Todas)
+8. **Generación dinámica segura con plantillas HTML (Noemi):**  
+   Prevención de inyección HTML.
 
-postMessage() mejorado con validación estricta de origen.
+9. **Comunicación avanzada entre ventanas (Todas):**  
+   postMessage() con validación estricta de origen.
 
-Envío de snapshot en tiempo real al panel.
+---
 
-Sincronización automática al cambiar filtro.
 
-##Justificación de persistencia
+## Justificación de persistencia
 
-## Mecanismo elegido: localStorage
+## Mecanismo elegido: **localStorage**
 
-Motivos principales:
+**Motivos principales:**
 
-Sin tráfico al servidor (privacidad).
+- Sin tráfico al servidor (privacidad).
 
-Suficiente capacidad (≈5 MB).
+- Suficiente capacidad (≈5 MB).
 
-Acceso simple (setItem, getItem).
+- Acceso simple (setItem, getItem).
 
-Buen soporte en navegadores modernos.
+- Buen soporte en navegadores modernos.
 
-Cookies descartadas: limitadas, caducan y viajan en cada solicitud HTTP.
+**Cookies descartadas:** limitadas, caducan y viajan en cada solicitud HTTP.
+
+---
 
 ## Uso de objetos nativos
-Objeto	Ejemplo	Finalidad
-Date	Calcular si una nota es de hoy/semana	Filtros y formateo
-Math	Math.min/Math.max	Validación de prioridad
-String	.trim()	Validación de texto
-Number	Number()	Validación y conversión
-Interacción con el navegador
 
-navigator.language para formateo de fechas.
+| Objeto | Ejemplo | Finalidad |
+|--------|---------|-----------|
+| Date   | Comprobar si la nota es de hoy/semana | Filtros y formateo |
+| Math   | Math.min / Math.max | Validación de prioridad |
+| String | .trim() | Validación de texto |
+| Number | Number() | Conversión y validación numérica |
 
-location.hash como enrutador simple para filtros.
+---
 
-window.open() para mostrar el Panel Diario.
+## Interacción con el navegador
 
-postMessage() para enviar snapshots de forma segura.
+- `navigator.language para formateo de fechas.
 
-Fullscreen API para modo pantalla completa.
+- `location.hash como enrutador simple para filtros.
 
-Persistencia y comunicación
+- `window.open() para mostrar el Panel Diario.
+
+- `postMessage() para enviar snapshots de forma segura.
+
+- Fullscreen API para modo pantalla completa.
+
+---
+
+## Persistencia y comunicación
 
 Ejemplo de snapshot transferido por postMessage():
 
+```json
 {
-  tipo: "SNAPSHOT",
-  marca: "2025-11-06T12:34:56.000Z",
-  filtro: "#semana",
-  notas: [ ... ]
+  "tipo": "SNAPSHOT",
+  "marca": "2025-11-06T12:34:56.000Z",
+  "filtro": "#semana",
+  "notas": []
 }
 
-## Matriz RA–CE (actualizada)
-RA / CE	Implementación
-Objetos nativos	Manejo de fechas (filtros), validación numérica, formateo internacional
-Interacción con navegador	navigator.language, location.hash, eventos hashchange
-Generación dinámica HTML	Plantillas <template> (Noemi), render seguro, edición inline
-Viewport / Scroll / Pantalla completa	Scroll automático (Paula), Fullscreen API (Noemi)
-Ventanas y comunicación	window.open(), postMessage(), envío estructurado de snapshots (Todas)
-Persistencia	localStorage, exportación/importación JSON (Alba), snapshots (Alba)
-Depuración	console.log, console.warn, validaciones con mensajes claros
-Depuración y evidencias
+Matriz RA–CE
+
+| RA / CE | Implementación |
+|---------|----------------|
+| Objetos nativos | Manejo de fechas (filtros), validación numérica, formateo internacional |
+| Interacción con navegador | navigator.language, location.hash, eventos hashchange |
+| Generación dinámica HTML | Plantillas `<template>`, render seguro, edición inline |
+| Viewport / Scroll / Pantalla completa | Scroll automático, Fullscreen API |
+| Ventanas y comunicación | window.open(), postMessage(), snapshot estructurado |
+| Persistencia | localStorage, exportación/importación JSON, snapshots |
+| Depuración | console.log, console.warn, validaciones con mensajes |
+
 
 Probado en Chrome, Firefox y Edge.
 Capturas incluidas en la carpeta correspondiente.
@@ -144,10 +141,10 @@ Alba Martínez:
 Paula Saez:
 
   RF7 - Ventana auxiliar (Panel diario) y comunicación controlada
-    Comentarios
-    Edición inline
-    Validaciones completas (texto, fecha, prioridad)
-    Guía de usuario
+  Comentarios
+  Edición inline
+  Validaciones completas (texto, fecha, prioridad)
+  Guía de usuario
   
 
 Noemi Muñiz:
@@ -165,7 +162,6 @@ Trabajo conjunto:
 
 
 © 2025-10-27 — DWEC
-    README
-    GUIA DE USUARIO
+
 
 
