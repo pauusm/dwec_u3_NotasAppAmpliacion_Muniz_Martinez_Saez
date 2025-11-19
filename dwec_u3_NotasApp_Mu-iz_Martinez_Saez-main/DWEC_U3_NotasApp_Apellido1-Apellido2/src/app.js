@@ -290,6 +290,9 @@ function crearNotaDOM(nota) {
   const tpl = document.getElementById("nota-template");
   const clone = tpl.content.cloneNode(true);
 
+  const art = clone.querySelector("article");
+  art.dataset.id = nota.id
+  
   clone.querySelector(".titulo").textContent = nota.texto;
   clone.querySelector(".fecha").textContent = nota.fecha;
 
